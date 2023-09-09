@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lan.website.mbg.mapper.IpsetMapper">
+  <resultMap id="BaseResultMap" type="com.lan.website.mbg.model.Ipset">
+    <id column="key_id" jdbcType="INTEGER" property="keyId" />
+    <id column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="mark" jdbcType="VARCHAR" property="mark" />
+    <result column="firsttime" jdbcType="TIMESTAMP" property="firsttime" />
+    <result column="bantime" jdbcType="TIMESTAMP" property="bantime" />
+    <result column="totime" jdbcType="TIMESTAMP" property="totime" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ip,type, mark,firsttime,bantime,totime
+  </sql>
+
+  <select id="select" resultMap="BaseResultMap">
+    select *
+    from ipset
+    ORDER BY totime desc
+  </select>
+
+  <select id="selectip" resultMap="BaseResultMap" parameterType="String">
+    select *
+    from ipset where ip = #{ip}
+  </select>
+  <insert id="insert" parameterType="com.lan.website.mbg.model.Ipset" >
+    insert into ipset
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      ip,
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="mark != null" >
+        mark,
+      </if>
+      firsttime,
+      <if test="bantime != null" >
+        bantime,
+      </if>
+      <if test="totime != null" >
+        totime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{ip,jdbcType=VARCHAR},
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null" >
+        #{mark,jdbcType=VARCHAR},
+      </if>
+      now(),
+      <if test="bantime != null" >
+        #{bantime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totime != null" >
+        #{totime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lan.website.mbg.model.Ipset" >
+    update ipset
+    <set >
+      <if test="mark != null" >
+        mark = #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type =  #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="firsttime != null" >
+        firsttime = #{firsttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bantime != null" >
+        bantime = #{bantime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totime != null" >
+        totime = #{totime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ip = #{ip,jdbcType=INTEGER}
+  </update>
+</mapper>
